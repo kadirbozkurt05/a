@@ -7,6 +7,7 @@ import { mockExams } from '../data/mockExams';
 import { ExamResult } from '../types/exam';
 import ExamCertificate from '../components/exams/ExamCertificate';
 import CertificateForm from '../components/exams/CertificateForm';
+import QuestionResults from '../components/exams/QuestionResults';
 
 const ExamPage = () => {
   const { examId } = useParams<{ examId: string }>();
@@ -18,6 +19,7 @@ const ExamPage = () => {
   const [examStartTime, setExamStartTime] = useState<Date | null>(null);
   const [showCertificateForm, setShowCertificateForm] = useState(false);
   const [studentName, setStudentName] = useState<string>('');
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
   const certificateRef = useRef<HTMLDivElement>(null);
   
   const exam = mockExams.find(e => e.id === examId);
@@ -47,6 +49,7 @@ const ExamPage = () => {
 
   const handlePrint = useReactToPrint({
     content: () => certificateRef.current,
+    pageStyle: '@page { size: landscape; margin: 0; }',
   });
 
   const formatTime = (seconds: number) => {
@@ -102,7 +105,10 @@ const ExamPage = () => {
   const handleCertificateSubmit = (name: string) => {
     setStudentName(name);
     setShowCertificateForm(false);
-    setTimeout(handlePrint, 500);
+    setTimeout(() => {
+      handlePrint();
+      navigate('/sinavlar');
+    }, 500);
   };
 
   if (!exam) return null;
@@ -144,7 +150,14 @@ const ExamPage = () => {
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <QuestionResults
+                  questions={exam.questions}
+                  answers={answers}
+                  onQuestionClick={setSelectedQuestionIndex}
+                  selectedQuestionIndex={selectedQuestionIndex}
+                />
+
+                <div className="space-y-4 mt-8">
                   <button
                     onClick={() => setShowCertificateForm(true)}
                     className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"

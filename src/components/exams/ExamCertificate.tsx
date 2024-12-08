@@ -18,45 +18,77 @@ const ExamCertificate = forwardRef<HTMLDivElement, CertificateProps>(
 
     return (
       <div ref={ref} className="p-8 print:p-0">
-        <div className="w-[210mm] h-[297mm] mx-auto bg-white border-8 border-double border-blue-600 p-12 print:border-8 print:p-12 print:w-full print:h-full">
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-8">
-              <Award className="w-24 h-24 text-blue-600 print:text-blue-600" />
+        <div className="w-[297mm] h-[210mm] mx-auto bg-white relative print:w-full print:h-full flex items-center justify-center">
+          {/* Decorative Border */}
+          <div className="absolute inset-0">
+            <div className="w-full h-full border-[16px] border-double border-blue-600">
+              {/* Corner Ornaments */}
+              <div className="absolute -top-3 -left-3 w-6 h-6 bg-white">
+                <div className="w-full h-full border-t-4 border-l-4 border-blue-600 rounded-tl-lg" />
+              </div>
+              <div className="absolute -top-3 -right-3 w-6 h-6 bg-white">
+                <div className="w-full h-full border-t-4 border-r-4 border-blue-600 rounded-tr-lg" />
+              </div>
+              <div className="absolute -bottom-3 -left-3 w-6 h-6 bg-white">
+                <div className="w-full h-full border-b-4 border-l-4 border-blue-600 rounded-bl-lg" />
+              </div>
+              <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-white">
+                <div className="w-full h-full border-b-4 border-r-4 border-blue-600 rounded-br-lg" />
+              </div>
             </div>
-            
-            <h1 className="text-4xl font-serif font-bold text-gray-800 mb-6 print:text-gray-800">
-              Başarı Sertifikası
-            </h1>
+          </div>
 
-            <div className="text-xl text-gray-600 mb-12 print:text-gray-600">
-              Bu belge
-            </div>
-
-            <div className="text-3xl font-bold text-blue-600 mb-12 font-serif print:text-blue-600">
-              {studentName}
-            </div>
-
-            <div className="max-w-2xl text-lg leading-relaxed text-gray-700 mb-12 print:text-gray-700">
-              <p>
-                {examTitle} konulu sınavda {result.totalQuestions} sorudan{' '}
-                {result.correctAnswers} tanesini doğru cevaplayarak %{result.score} başarı
-                oranı ile bu belgeyi almaya hak kazanmıştır.
-              </p>
-            </div>
-
-            <div className="flex items-center justify-center text-gray-600 mb-12 print:text-gray-600">
-              <Calendar className="w-5 h-5 mr-2" />
-              <span>{currentDate}</span>
-            </div>
-
-            <div className="flex items-center">
+          {/* Certificate Content */}
+          <div className="w-full px-16 py-12 relative">
+            {/* Header */}
+            <div className="flex items-center justify-center gap-8 mb-12">
               <img
                 src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&q=80&w=100"
                 alt="EğitimPortal Logo"
-                className="w-12 h-12 rounded-full mr-3 print:w-12 print:h-12"
+                className="w-20 h-20 rounded-full"
               />
-              <div className="text-2xl font-bold text-gray-800 print:text-gray-800">
+              <div className="text-3xl font-bold text-gray-800">
                 EğitimPortal
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="text-center space-y-8">
+              <Award className="w-24 h-24 text-blue-600 mx-auto" />
+              
+              <h1 className="text-5xl font-serif font-bold text-gray-800">
+                Başarı Sertifikası
+              </h1>
+
+              <div className="text-4xl font-bold text-blue-600 font-serif">
+                {studentName}
+              </div>
+
+              <div className="max-w-2xl mx-auto text-xl leading-relaxed text-gray-700">
+                <p>
+                  {examTitle} konulu sınavda {result.totalQuestions} sorudan{' '}
+                  {result.correctAnswers} tanesini doğru cevaplayarak %{result.score} başarı
+                  oranı ile bu belgeyi almaya hak kazanmıştır.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center text-gray-600 text-lg">
+                <Calendar className="w-6 h-6 mr-2" />
+                <span>{currentDate}</span>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="absolute bottom-12 left-16 right-16">
+              <div className="border-t-2 border-gray-200 pt-4 flex justify-between items-center">
+                <div className="text-center">
+                  <div className="font-bold text-gray-700">Sınav Yöneticisi</div>
+                  <div className="text-sm text-gray-500">EğitimPortal</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-gray-700">Onay</div>
+                  <div className="text-sm text-gray-500">12345</div>
+                </div>
               </div>
             </div>
           </div>
