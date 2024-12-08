@@ -35,18 +35,18 @@ export const navigationItems: NavigationItem[] = [
         label: 'Zaman Planlayıcı',
         path: '/zaman-planlayici',
         icon: Clock
-      },
-      {
-        label: 'Sınavlar',
-        path: '#',
-        icon: GraduationCap,
-        children: [
-          { label: '1. Sınıf', path: '/sinavlar/1' },
-          { label: '2. Sınıf', path: '/sinavlar/2' },
-          { label: '3. Sınıf', path: '/sinavlar/3' },
-          { label: '4. Sınıf', path: '/sinavlar/4' }
-        ]
       }
+    ]
+  },
+  {
+    label: 'Sınavlar',
+    path: '/sinavlar',
+    icon: GraduationCap,
+    children: [
+      { label: '1. Sınıf', path: '/sinavlar/1' },
+      { label: '2. Sınıf', path: '/sinavlar/2' },
+      { label: '3. Sınıf', path: '/sinavlar/3' },
+      { label: '4. Sınıf', path: '/sinavlar/4' }
     ]
   },
   {

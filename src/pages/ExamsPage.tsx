@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import ExamCard from '../components/exams/ExamCard';
+import ExamList from '../components/exams/ExamList';
 import ExamFilters from '../components/exams/ExamFilters';
 import { mockExams } from '../data/mockExams';
 
 const ExamsPage = () => {
-  const { grade } = useParams<{ grade: string }>();
+  const { grade } = useParams<{ grade?: string }>();
+  const navigate = useNavigate();
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
   const [difficulty, setDifficulty] = useState('');
@@ -25,8 +26,8 @@ const ExamsPage = () => {
   const topics = [...new Set(mockExams.map((exam) => exam.topic))];
 
   const handleStartExam = (examId: string) => {
-    // This will be implemented when the backend is ready
-    console.log(`Starting exam: ${examId}`);
+    // In a real application, this would navigate to the exam page
+    navigate(`/sinav/${examId}`);
   };
 
   return (
@@ -37,9 +38,14 @@ const ExamsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-6xl mx-auto"
         >
-          <h1 className="text-3xl font-bold text-gray-800 mb-8">
-            {grade ? `${grade}. Sınıf Sınavları` : 'Tüm Sınavlar'}
-          </h1>
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 mb-8 text-white">
+            <h1 className="text-3xl font-bold mb-2">
+              {grade ? `${grade}. Sınıf Sınavları` : 'Tüm Sınavlar'}
+            </h1>
+            <p className="text-blue-100">
+              Öğrencilerinizin seviyesini ölçmek için hazırlanmış kapsamlı değerlendirme sınavları
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div className="lg:col-span-1">
@@ -56,21 +62,10 @@ const ExamsPage = () => {
             </div>
 
             <div className="lg:col-span-3">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredExams.map((exam) => (
-                  <ExamCard
-                    key={exam.id}
-                    exam={exam}
-                    onStart={handleStartExam}
-                  />
-                ))}
-              </div>
-
-              {filteredExams.length === 0 && (
-                <div className="text-center py-12 bg-white rounded-lg shadow-md">
-                  <p className="text-gray-600">Bu kriterlere uygun sınav bulunamadı.</p>
-                </div>
-              )}
+              <ExamList 
+                exams={filteredExams}
+                onStartExam={handleStartExam}
+              />
             </div>
           </div>
         </motion.div>

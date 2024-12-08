@@ -11,6 +11,7 @@ import MemoryGamePage from './pages/games/MemoryGamePage';
 import WordScramblePage from './pages/games/WordScramblePage';
 import MathQuizPage from './pages/games/MathQuizPage';
 import ExamsPage from './pages/ExamsPage';
+import ExamPage from './pages/ExamPage';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/sinif/:grade" element={<ResourcesPage />} />
             <Route path="/sinavlar" element={<ExamsPage />} />
             <Route path="/sinavlar/:grade" element={<ExamsPage />} />
+            <Route path="/sinav/:examId" element={<ExamPage />} />
             <Route path="/oyunlar/hafiza" element={<MemoryGamePage />} />
             <Route path="/oyunlar/kelime-karistirma" element={<WordScramblePage />} />
             <Route path="/oyunlar/matematik-yarismasi" element={<MathQuizPage />} />
