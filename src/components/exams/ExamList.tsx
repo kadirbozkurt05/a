@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Exam } from '../../types/exam';
 import ExamCard from './ExamCard';
 
@@ -19,16 +19,20 @@ const ExamList: React.FC<ExamListProps> = ({ exams, onStartExam }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {exams.map((exam) => (
-        <motion.div
-          key={exam.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ExamCard exam={exam} onStart={onStartExam} />
-        </motion.div>
-      ))}
+      <AnimatePresence mode="popLayout">
+        {exams.map((exam) => (
+          <motion.div
+            key={exam.id}
+            layout
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ExamCard exam={exam} onStart={onStartExam} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 };
