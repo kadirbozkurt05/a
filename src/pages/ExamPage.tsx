@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, ChevronLeft, ChevronRight, Save, Award } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, Save, Award, Printer } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
 import { mockExams } from '../data/mockExams';
 import { ExamResult } from '../types/exam';
+import ExamCertificate from '../components/exams/ExamCertificate';
+import CertificateForm from '../components/exams/CertificateForm';
 
 const ExamPage = () => {
   const { examId } = useParams<{ examId: string }>();
@@ -13,6 +16,9 @@ const ExamPage = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
   const [examStartTime, setExamStartTime] = useState<Date | null>(null);
+  const [showCertificateForm, setShowCertificateForm] = useState(false);
+  const [studentName, setStudentName] = useState<string>('');
+  const certificateRef = useRef<HTMLDivElement>(null);
   
   const exam = mockExams.find(e => e.id === examId);
   
@@ -39,9 +45,9 @@ const ExamPage = () => {
     return () => clearInterval(timer);
   }, [exam, navigate]);
 
-  if (!exam) {
-    return null;
-  }
+  const handlePrint = useReactToPrint({
+    content: () => certificateRef.current,
+  });
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -57,7 +63,7 @@ const ExamPage = () => {
   };
 
   const handleNext = () => {
-    if (currentQuestion < exam.questions.length - 1) {
+    if (currentQuestion < exam!.questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     }
   };
@@ -70,7 +76,7 @@ const ExamPage = () => {
 
   const calculateResult = () => {
     let correctCount = 0;
-    exam.questions.forEach((question, index) => {
+    exam!.questions.forEach((question, index) => {
       if (answers[index] === question.correct) {
         correctCount++;
       }
@@ -81,9 +87,9 @@ const ExamPage = () => {
       : 0;
 
     return {
-      totalQuestions: exam.questions.length,
+      totalQuestions: exam!.questions.length,
       correctAnswers: correctCount,
-      score: Math.round((correctCount / exam.questions.length) * 100),
+      score: Math.round((correctCount / exam!.questions.length) * 100),
       timeSpent
     };
   };
@@ -93,6 +99,14 @@ const ExamPage = () => {
     setExamResult(result);
   };
 
+  const handleCertificateSubmit = (name: string) => {
+    setStudentName(name);
+    setShowCertificateForm(false);
+    setTimeout(handlePrint, 500);
+  };
+
+  if (!exam) return null;
+
   if (examResult) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
@@ -100,40 +114,72 @@ const ExamPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 text-center"
+            className="max-w-2xl mx-auto"
           >
-            <Award className="w-16 h-16 mx-auto mb-6 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Sınav Sonucu</h1>
-            
-            <div className="space-y-4 mb-8">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-2xl font-bold text-blue-600">{examResult.score}%</p>
-                <p className="text-gray-600">Başarı Oranı</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-xl font-bold text-gray-800">
-                    {examResult.correctAnswers}/{examResult.totalQuestions}
-                  </p>
-                  <p className="text-gray-600">Doğru Cevap</p>
-                </div>
+            {!showCertificateForm && !studentName && (
+              <div className="bg-white rounded-xl shadow-lg p-8 text-center mb-6">
+                <Award className="w-16 h-16 mx-auto mb-6 text-blue-600" />
+                <h1 className="text-3xl font-bold text-gray-800 mb-6">Sınav Sonucu</h1>
                 
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-xl font-bold text-gray-800">
-                    {Math.floor(examResult.timeSpent / 60)}:{(examResult.timeSpent % 60).toString().padStart(2, '0')}
-                  </p>
-                  <p className="text-gray-600">Geçen Süre</p>
+                <div className="space-y-4 mb-8">
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-2xl font-bold text-blue-600">{examResult.score}%</p>
+                    <p className="text-gray-600">Başarı Oranı</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <p className="text-xl font-bold text-gray-800">
+                        {examResult.correctAnswers}/{examResult.totalQuestions}
+                      </p>
+                      <p className="text-gray-600">Doğru Cevap</p>
+                    </div>
+                    
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <p className="text-xl font-bold text-gray-800">
+                        {Math.floor(examResult.timeSpent / 60)}:{(examResult.timeSpent % 60).toString().padStart(2, '0')}
+                      </p>
+                      <p className="text-gray-600">Geçen Süre</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <button
+                    onClick={() => setShowCertificateForm(true)}
+                    className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                  >
+                    <Award className="w-5 h-5 mr-2" />
+                    Sertifika Al
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/sinavlar')}
+                    className="w-full px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    Sınavlara Dön
+                  </button>
                 </div>
               </div>
-            </div>
+            )}
 
-            <button
-              onClick={() => navigate('/sinavlar')}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Sınavlara Dön
-            </button>
+            {showCertificateForm && (
+              <CertificateForm
+                onSubmit={handleCertificateSubmit}
+                onCancel={() => setShowCertificateForm(false)}
+              />
+            )}
+
+            <div className="hidden">
+              {studentName && examResult && (
+                <ExamCertificate
+                  ref={certificateRef}
+                  examTitle={exam.title}
+                  studentName={studentName}
+                  result={examResult}
+                />
+              )}
+            </div>
           </motion.div>
         </div>
       </div>

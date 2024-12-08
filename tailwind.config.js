@@ -5,4 +5,8 @@ export default {
     extend: {},
   },
   plugins: [],
+  // Enable print styles
+  screens: {
+    'print': {'raw': 'print'},
+  }
 };
