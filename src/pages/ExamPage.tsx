@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, ChevronLeft, ChevronRight, Save, Award, Printer } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, Save, Award } from 'lucide-react';
 import { useReactToPrint } from 'react-to-print';
-import { mockExams } from '../data/mockExams';
-import { ExamResult } from '../types/exam';
+import { fetchExams } from '../api/exams';
+import { Exam, ExamResult } from '../types/exam';
 import ExamCertificate from '../components/exams/ExamCertificate';
 import CertificateForm from '../components/exams/CertificateForm';
 import QuestionResults from '../components/exams/QuestionResults';
@@ -12,6 +12,9 @@ import QuestionResults from '../components/exams/QuestionResults';
 const ExamPage = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
+  const [exam, setExam] = useState<Exam | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [timeLeft, setTimeLeft] = useState(0);
@@ -21,18 +24,35 @@ const ExamPage = () => {
   const [studentName, setStudentName] = useState<string>('');
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
   const certificateRef = useRef<HTMLDivElement>(null);
-  
-  const exam = mockExams.find(e => e.id === examId);
-  
+
   useEffect(() => {
-    if (!exam) {
-      navigate('/sinavlar');
-      return;
-    }
+    const loadExam = async () => {
+      try {
+        setLoading(true);
+        const response = await fetchExams();
+        const foundExam = response.find(e => e._id === examId);
+        
+        if (!foundExam) {
+          throw new Error('Sınav bulunamadı');
+        }
+        setExam(foundExam);
+        setTimeLeft(foundExam.duration * 60);
+        setExamStartTime(new Date());
+      } catch (err) {
+        setError('Sınav yüklenirken bir hata oluştu.');
+        navigate('/sinavlar');
+      } finally {
+        setLoading(false);
+      }
+    };
     
-    setTimeLeft(exam.duration * 60);
-    setExamStartTime(new Date());
-    
+
+    loadExam();
+  }, [examId, navigate]);
+
+  useEffect(() => {
+    if (!exam || loading) return;
+
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -45,7 +65,7 @@ const ExamPage = () => {
     }, 1000);
     
     return () => clearInterval(timer);
-  }, [exam, navigate]);
+  }, [exam, loading]);
 
   const handlePrint = useReactToPrint({
     content: () => certificateRef.current,
@@ -66,8 +86,9 @@ const ExamPage = () => {
   };
 
   const handleNext = () => {
-    if (currentQuestion < exam!.questions.length - 1) {
+    if (exam && currentQuestion < exam.questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
+      
     }
   };
 
@@ -78,8 +99,10 @@ const ExamPage = () => {
   };
 
   const calculateResult = () => {
+    if (!exam) return null;
+
     let correctCount = 0;
-    exam!.questions.forEach((question, index) => {
+    exam.questions.forEach((question, index) => {
       if (answers[index] === question.correct) {
         correctCount++;
       }
@@ -90,16 +113,18 @@ const ExamPage = () => {
       : 0;
 
     return {
-      totalQuestions: exam!.questions.length,
+      totalQuestions: exam.questions.length,
       correctAnswers: correctCount,
-      score: Math.round((correctCount / exam!.questions.length) * 100),
+      score: Math.round((correctCount / exam.questions.length) * 100),
       timeSpent
     };
   };
 
   const handleSubmit = () => {
     const result = calculateResult();
-    setExamResult(result);
+    if (result) {
+      setExamResult(result);
+    }
   };
 
   const handleCertificateSubmit = (name: string) => {
@@ -111,7 +136,21 @@ const ExamPage = () => {
     }, 500);
   };
 
-  if (!exam) return null;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Yükleniyor...</div>
+      </div>
+    );
+  }
+
+  if (error || !exam) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-red-600">{error || 'Sınav bulunamadı'}</div>
+      </div>
+    );
+  }
 
   if (examResult) {
     return (

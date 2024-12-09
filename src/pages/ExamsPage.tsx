@@ -1,28 +1,56 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ExamList from '../components/exams/ExamList';
 import ExamFilters from '../components/exams/ExamFilters';
 import SearchBar from '../components/exams/SearchBar';
-import { mockExams } from '../data/mockExams';
+import { fetchExams } from '../api/exams';
+import { Exam } from '../types/exam';
 
 const ExamsPage = () => {
   const { grade } = useParams<{ grade?: string }>();
   const navigate = useNavigate();
+  const [exams, setExams] = useState<Exam[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
   const [difficulty, setDifficulty] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const subjects = [...new Set(mockExams.map((exam) => exam.subject))];
+  useEffect(() => {
+    const loadExams = async () => {
+      try {
+        setLoading(true);
+        const response = await fetchExams(grade);
+        if (response ) {
+          setExams(response);
+        } else {
+          setExams([]);
+        }
+      } catch (err) {
+        console.error('Error loading exams:', err);
+        setError('Sınavlar yüklenirken bir hata oluştu.');
+        setExams([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Get keywords only for the selected subject
+    loadExams();
+  }, [grade]);
+
+  const subjects = useMemo(() => 
+    [...new Set(exams.map((exam) => exam.subject))],
+    [exams]
+  );
+
   const availableKeywords = useMemo(() => {
-    const exams = selectedSubject
-      ? mockExams.filter(exam => exam.subject === selectedSubject)
-      : mockExams;
-    return [...new Set(exams.flatMap(exam => exam.keywords))];
-  }, [selectedSubject]);
+    const filteredExams = selectedSubject
+      ? exams.filter(exam => exam.subject === selectedSubject)
+      : exams;
+    return [...new Set(filteredExams.flatMap(exam => exam.keywords))];
+  }, [selectedSubject, exams]);
 
   const handleKeywordChange = (keyword: string) => {
     setSelectedKeywords(prev => 
@@ -34,26 +62,19 @@ const ExamsPage = () => {
 
   const handleSubjectChange = (subject: string) => {
     setSelectedSubject(subject);
-    setSelectedKeywords([]); // Reset keywords when subject changes
+    setSelectedKeywords([]);
   };
 
   const filteredExams = useMemo(() => {
-    return mockExams.filter((exam) => {
-      // Grade filter
-      if (grade && exam.grade !== parseInt(grade)) return false;
-      
-      // Subject filter
+    return exams.filter((exam) => {
       if (selectedSubject && exam.subject !== selectedSubject) return false;
       
-      // Keywords filter
       if (selectedKeywords.length > 0 && !selectedKeywords.every(keyword => 
         exam.keywords.includes(keyword)
       )) return false;
       
-      // Difficulty filter
       if (difficulty && exam.difficulty !== difficulty) return false;
       
-      // Search query filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const matchesTitle = exam.title.toLowerCase().includes(query);
@@ -65,11 +86,27 @@ const ExamsPage = () => {
       
       return true;
     });
-  }, [grade, selectedSubject, selectedKeywords, difficulty, searchQuery]);
+  }, [exams, selectedSubject, selectedKeywords, difficulty, searchQuery]);
 
   const handleStartExam = (examId: string) => {
     navigate(`/sinav/${examId}`);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Yükleniyor...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-red-600">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">

@@ -86,7 +86,7 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam, onStart }) => {
         onClose={() => setShowModal(false)}
         onStart={() => {
           setShowModal(false);
-          onStart(exam.id);
+          onStart(exam._id);
         }}
       />
     </>

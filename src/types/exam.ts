@@ -6,7 +6,7 @@ export interface Question {
 }
 
 export interface Exam {
-  id: string;
+  _id: string;
   title: string;
   subject: string;
   keywords: string[];
