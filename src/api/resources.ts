@@ -2,7 +2,7 @@ import { ResourcesResponse } from '../types/resources';
 
 export async function fetchResources(): Promise<ResourcesResponse> {
   try {
-    const response = await fetch('https://assitant-server.onrender.com/api/resources');
+    const response = await fetch('https://teacher-assistant-server-0a050558c608.herokuapp.com/api/resources');
     if (!response.ok) {
       throw new Error('Failed to fetch resources');
     }
