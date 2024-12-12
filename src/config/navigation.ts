@@ -6,7 +6,8 @@ import {
   GamepadIcon,
   PenTool,
   Menu,
-  GraduationCap
+  GraduationCap,
+  User
 } from 'lucide-react';
 import { NavigationItem } from '../types/navigation';
 
@@ -15,6 +16,11 @@ export const navigationItems: NavigationItem[] = [
     label: 'Anasayfa',
     path: '/',
     icon: Home
+  },
+  {
+    label: 'Hakkımda',
+    path: '/hakkimda',
+    icon: User
   },
   {
     label: 'Araçlar',

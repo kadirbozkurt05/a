@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
 import SyllableWorkPage from './pages/SyllableWorkPage';
 import ResourcesPage from './pages/ResourcesPage';
 import MathToolsPage from './pages/MathToolsPage';
@@ -21,6 +22,7 @@ export default function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/hakkimda" element={<AboutPage />} />
             <Route path="/hece-calismasi" element={<SyllableWorkPage />} />
             <Route path="/matematik-araclari" element={<MathToolsPage />} />
             <Route path="/zaman-planlayici" element={<TimeplannerPage />} />
