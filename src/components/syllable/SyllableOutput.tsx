@@ -14,7 +14,7 @@ const SyllableOutput = forwardRef<HTMLDivElement, SyllableOutputProps>(
           <div
             key={index}
             className={`${mode === 'word' ? '' : 'text-lg leading-relaxed'}`}
-            style={{ fontFamily: "'Comic Sans MS', cursive" }}
+            style={{ fontFamily: "'Poppins', sans-serif" }}
           >
             {mode === 'word' ? coloredSyllables(item) : renderSentence(item)}
           </div>
