@@ -8,6 +8,7 @@ import SyllableWorkPage from './pages/SyllableWorkPage';
 import ResourcesPage from './pages/ResourcesPage';
 import MathToolsPage from './pages/MathToolsPage';
 import TimeplannerPage from './pages/TimeplannerPage';
+import SolarSystemPage from './pages/SolarSystemPage'; // Add this line
 import MemoryGamePage from './pages/games/MemoryGamePage';
 import WordScramblePage from './pages/games/WordScramblePage';
 import MathQuizPage from './pages/games/MathQuizPage';
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/hece-calismasi" element={<SyllableWorkPage />} />
             <Route path="/matematik-araclari" element={<MathToolsPage />} />
             <Route path="/zaman-planlayici" element={<TimeplannerPage />} />
+            <Route path="/gunes-sistemi" element={<SolarSystemPage />} />
             <Route path="/kaynaklar" element={<ResourcesPage />} />
             <Route path="/sinif/:grade" element={<ResourcesPage />} />
             <Route path="/sinavlar" element={<ExamsPage />} />
