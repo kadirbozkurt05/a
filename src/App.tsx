@@ -8,12 +8,14 @@ import SyllableWorkPage from './pages/SyllableWorkPage';
 import ResourcesPage from './pages/ResourcesPage';
 import MathToolsPage from './pages/MathToolsPage';
 import TimeplannerPage from './pages/TimeplannerPage';
-import SolarSystemPage from './pages/SolarSystemPage'; // Add this line
+import SolarSystemPage from './pages/SolarSystemPage';
 import MemoryGamePage from './pages/games/MemoryGamePage';
 import WordScramblePage from './pages/games/WordScramblePage';
 import MathQuizPage from './pages/games/MathQuizPage';
 import ExamsPage from './pages/ExamsPage';
 import ExamPage from './pages/ExamPage';
+import StudyPlannerPage from './pages/ai/StudyPlannerPage';
+import ConceptExplainerPage from './pages/ai/ConceptExplainerPage';
 
 export default function App() {
   return (
@@ -36,6 +38,8 @@ export default function App() {
             <Route path="/oyunlar/hafiza" element={<MemoryGamePage />} />
             <Route path="/oyunlar/kelime-karistirma" element={<WordScramblePage />} />
             <Route path="/oyunlar/matematik-yarismasi" element={<MathQuizPage />} />
+            <Route path="/yapay-zeka/calisma-programi" element={<StudyPlannerPage />} />
+            <Route path="/yapay-zeka/konu-anlatimi" element={<ConceptExplainerPage />} />
           </Routes>
         </main>
         <Footer />

@@ -8,7 +8,10 @@ import {
   Menu,
   GraduationCap,
   User,
-  Sun // Add Sun icon for solar system
+  Sun,
+  Brain,
+  Calendar,
+  BookText
 } from 'lucide-react';
 import { NavigationItem } from '../types/navigation';
 
@@ -47,6 +50,23 @@ export const navigationItems: NavigationItem[] = [
         label: 'Güneş Sistemi',
         path: '/gunes-sistemi',
         icon: Sun
+      }
+    ]
+  },
+  {
+    label: 'Yapay Zeka Araçları',
+    path: '#',
+    icon: Brain,
+    children: [
+      {
+        label: 'Çalışma Programı',
+        path: '/yapay-zeka/calisma-programi',
+        icon: Calendar
+      },
+      {
+        label: 'Kısa Konu Anlatımı',
+        path: '/yapay-zeka/konu-anlatimi',
+        icon: BookText
       }
     ]
   },
@@ -108,13 +128,3 @@ export const navigationItems: NavigationItem[] = [
     ]
   }
 ];
-
-
-
-
-
-
-
-
-
-
