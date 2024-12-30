@@ -9,11 +9,11 @@ interface SyllableOutputProps {
 const SyllableOutput = forwardRef<HTMLDivElement, SyllableOutputProps>(
   ({ mode, items }, ref) => (
     <div ref={ref} className="bg-white p-8 rounded-lg border">
-      <div className={`${mode === 'word' ? 'grid grid-cols-2 gap-4' : 'space-y-4 text-center'}`}>
+      <div className={`${mode === 'word' ? 'grid grid-cols-2 gap-6' : 'space-y-6 text-center'}`}>
         {items.map((item, index) => (
           <div
             key={index}
-            className={`${mode === 'word' ? '' : 'text-lg leading-relaxed'}`}
+            className={`${mode === 'word' ? 'text-2xl' : 'text-3xl leading-relaxed'}`}
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
             {mode === 'word' ? coloredSyllables(item) : renderSentence(item)}
