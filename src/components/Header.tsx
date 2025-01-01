@@ -14,9 +14,9 @@ const Header = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="https://i.ibb.co/pPNXtGp/logo-black.png" 
+              src="https://i.ibb.co/qrF8HGm/esmaogretmen-com.png" 
               alt="Esma Öğretmen Logo" 
-              className="h-12"
+              className="h-6"
             />
           </Link>
 

@@ -3,9 +3,9 @@ import { Mail, Phone, MapPin } from 'lucide-react';
 
 const ContactInfo: React.FC = () => {
   const contactDetails = [
-    { icon: Mail, text: 'iletisim@esmaogretmen.com' },
-    { icon: Phone, text: '+90 (555) 123 45 67' },
-    { icon: MapPin, text: 'İstanbul, Türkiye' }
+    { icon: Mail, text: 'sogretmeni1@gmail.com' },
+    { icon: Phone, text: '+90 (543) 268 73 22' },
+    { icon: MapPin, text: 'İzmir, Türkiye' }
   ];
 
   return (

@@ -5,7 +5,7 @@ export const coloredSyllables = (word: string) => {
   return word.split('-').map((syllable, index) => (
     <span
       key={index}
-      className={`inline-block px-3 py-2 m-1 text-2xl ${
+      className={`inline-block px-3 py-2 m-1 text-5xl ${
         ['bg-red-200', 'bg-blue-200', 'bg-green-200', 'bg-yellow-200'][index % 4]
       }`}
       style={{ fontFamily: "'Poppins', sans-serif" }}
@@ -43,7 +43,7 @@ const renderWord = (
     return (
       <span
         key={index}
-        className={`font-medium text-2xl ${shouldBeRed ? 'text-red-600' : 'text-gray-900'}`}
+        className={`font-medium text-5xl ${shouldBeRed ? 'text-red-600' : 'text-gray-900'}`}
         style={{ fontFamily: "'Poppins', sans-serif" }}
       >
         {syllable}
